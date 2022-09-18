@@ -162,13 +162,15 @@ first.then((val) => {
 - Use `.then` to log the value
 
 ```js
-new Promise((res, rej) => res("John"))
-  .then((val) => "Arya")
+new Promise((res, rej) => {
+  res("John");
+})
+  .then((val) => new Promise((res, rej) => res("Arya")))
   .then((val) => {
     console.log(val);
-    setTimeout(() => {
-      return "Bran";
-    }, 2000);
+    return new Promise((res, rej) => {
+      setTimeout(() => res("Bran"), 2000);
+    });
   })
-  .then((value) => console.log(value));
+  .then(console.log);
 ```
