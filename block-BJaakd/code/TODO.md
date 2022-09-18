@@ -2,38 +2,60 @@
 
 ```js
 // Your code
+let promise = new Promise((resolve, reject) => {
+  setTimeout(() => resolve("Promise Resolved!"), 1000);
+}).then((value) => console.log(value));
 ```
 
 2. Create another promise. Now have it reject with a value of `Rejected Promise!` without using `setTimeout`. Print the contents of the promise after it has been rejected by passing console.log to `.catch`
 
 ```js
 // Your code
+let promise = new Promise((resolve, reject) => {
+  reject(`Rejected Promise!`);
+}).catch((error) => console.log(error));
 ```
 
 3. Create another promise. Now have it reject with a value of `Rejected Promise!` without using `setTimeout`. Print the contents of the promise after it has been rejected by passing console.log to `.catch` and also use `.finally` to log message `Promise Settled!`.
 
 ```js
 // Your code
+let promise = new Promise((resolve, reject) => {
+  reject(`Rejected Promise!`);
+})
+  .catch((error) => console.log(error))
+  .finally(() => console.log("Promise Settled!"));
 ```
 
 4. What will be the output of the code below.
 
 ```js
-console.log('A');
+console.log("A");
 
 // Asynchronous code finises in 0 seconds (Callback Queue)
-setTimeout(() => console.log('B'), 0); // callback queue
+setTimeout(() => console.log("B"), 0); // callback queue
 
 // A promise that resolves right away (Microtask Queue)
-Promise.resolve().then(() => console.log('C'));
+Promise.resolve().then(() => console.log("C"));
 
-console.log('D');
+console.log("D");
+/*Output
+A
+D
+C
+B
+*/
 ```
 
 5. Write a function named `wait` that accepts `time` in ms returns a promise. The promise gets resolved after given time.
 
 ```js
 // Your code
+function wait(time) {
+  return new Promise((res, rej) => {
+    setTimeout(() => res(console.log("Resolved")), time);
+  });
+}
 ```
 
 6. Do the following:
@@ -47,6 +69,15 @@ console.log('D');
 
 ```js
 // Your code
+Promise.resolve(21)
+  .then((value) => value + 10)
+  .then((value) => value + 100)
+  .then((value) => {
+    if (value > 100) {
+      throw new Error("Value is Greater than 100");
+    }
+  })
+  .catch((error) => console.log(error));
 ```
 
 7. Do the following:
@@ -58,7 +89,12 @@ console.log('D');
 - Use `.then` and log the value
 
 ```js
-// Your code
+Promise.resolve(["A"])
+  .then((value) => value.concat("B"))
+  .then((array) => {
+    return { ...array };
+  })
+  .then((obj) => console.log(obj));
 ```
 
 8. Do the following:
@@ -70,6 +106,22 @@ console.log('D');
 
 ```js
 // Your code
+let first = new Promise((res, rej) => {
+  res(1);
+});
+first
+  .then((val) => {
+    console.log(val);
+    return 2;
+  })
+  .then((val) => {
+    console.log(val);
+    return 3;
+  })
+  .then((val) => {
+    console.log(val);
+    return 4;
+  });
 ```
 
 9. Do the following:
@@ -81,9 +133,26 @@ console.log('D');
 
 ```js
 // Your code
+let first = new Promise((res, rej) => {
+  res(1);
+});
+first.then((val) => {
+  console.log(val);
+  return 2;
+});
+first.then((val) => {
+  console.log(val);
+  return 3;
+});
+first.then((val) => {
+  console.log(val);
+  return 4;
+});
 ```
 
 10. Try to understand the difference between the problem 8 and 9. Write your observation.
+
+- In problem 8, we are chaining the promises, so when first promise is resolved, we get 1 and then after using `then` on first we get access to previous value so 1 gets printed to console. Similarly we are chaining then on promises so each time we get value of previous this, so 1,2,3 will be logged in console and final value of promise will be 4. But in problem 9, we are not chaining, we are using same promise i.e, first again and again, so previous value will be 1 only, so 1,1,1 gets logged into console. But the final return value is 4 so, promise result will be 4.
 
 11. Do the following
 
@@ -93,5 +162,13 @@ console.log('D');
 - Use `.then` to log the value
 
 ```js
-// Your code
+new Promise((res, rej) => res("John"))
+  .then((val) => "Arya")
+  .then((val) => {
+    console.log(val);
+    setTimeout(() => {
+      return "Bran";
+    }, 2000);
+  })
+  .then((value) => console.log(value));
 ```
