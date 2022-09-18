@@ -1,13 +1,35 @@
 const root = document.querySelector(".root");
+const select = document.querySelector("select");
 const url = `https://api.spaceflightnewsapi.net/v3/articles?_limit=30`;
+let news = [];
+let sources = [];
 
 let data = fetch(url);
-data.then((response) => response.json()).then((articles) => render(articles));
+data
+  .then((response) => response.json())
+  .then((articles) => {
+    articles.forEach((article) => {
+      sources.push(article.newsSite);
+      news.push(article);
+    });
+    render(news);
+    displayOptions();
+  });
+
+function displayOptions() {
+  Array.from(new Set(sources)).forEach((source) => {
+    let option = document.createElement("option");
+    option.value = source;
+    option.innerText = source;
+    select.append(option);
+  });
+}
 
 function render(object) {
   root.innerHTML = "";
   let fragment = new DocumentFragment();
   object.forEach((article) => {
+    // console.log(article);
     let parent = document.createElement("article");
     parent.classList.add("flex");
 
@@ -37,3 +59,11 @@ function render(object) {
   });
   root.append(fragment);
 }
+select.addEventListener("change", (event) => {
+  let selectedNews = news.filter((elm) => elm.newsSite === event.target.value);
+  if (event.target.value) {
+    render(selectedNews);
+  } else {
+    render(news);
+  }
+});
