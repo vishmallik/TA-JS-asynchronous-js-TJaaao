@@ -97,11 +97,19 @@ li {
   position: relative;
   background-color: rgb(253, 246, 246);
 }
-
-li > span {
+li span, li input {
   padding: 0 1rem;
   font-size: 1.5rem;
   text-align: justify;
+}
+li input {
+  background-color: transparent;
+  border: 0;
+  padding: 0.2rem 1rem;
+}
+li input:enabled {
+  border: 1px solid cadetblue;
+  outline: 0;
 }
 
 .fa-xmark {

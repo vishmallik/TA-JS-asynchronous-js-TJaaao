@@ -31,8 +31,8 @@
       let checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.checked = todo.isCompleted;
-      checkbox.addEventListener("input", (event) => {
-        handleToggle(event, todo._id);
+      checkbox.addEventListener("input", () => {
+        handleToggle(todo._id, todo.isCompleted);
       });
 
       let span = document.createElement("span");
@@ -40,6 +40,10 @@
       if (todo.isCompleted) {
         span.style.textDecoration = "line-through";
         span.style.color = "lightgrey";
+      } else {
+        span.addEventListener("dblclick", (event) => {
+          handleEdit(event, todo._id);
+        });
       }
 
       let i = document.createElement("i");
@@ -64,13 +68,24 @@
       },
     };
   }
-  function handleToggle(e, id) {
-    fetchTodo(baseURL + "/" + id, "PUT", data(e.target.checked));
+  function handleToggle(id, status) {
+    fetchTodo(baseURL + "/" + id, "PUT", data(!status));
   }
   function handleDelete(id) {
     fetchTodo(baseURL + "/" + id, "DELETE");
   }
-
+  function handleEdit(e, id) {
+    let editInput = document.createElement("input");
+    editInput.type = "text";
+    let parent = e.target.parentElement;
+    parent.replaceChild(editInput, e.target);
+    editInput.value = e.target.innerText;
+    editInput.addEventListener("keyup", (event) => {
+      if (event.keyCode === 13 && event.target.value !== "") {
+        fetchTodo(baseURL + "/" + id, "PUT", data(false, event.target.value));
+      }
+    });
+  }
   function handleInput(event) {
     let value = event.target.value;
     if (event.keyCode === 13 && value !== "") {
